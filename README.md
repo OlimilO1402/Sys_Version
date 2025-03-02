@@ -9,8 +9,9 @@
 Easy Comparing  
 ==============  
   
-for comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.  
+For comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.  
 like the following:  
+  
  VB    C#    meaning  
  ----------------------------------  
  * =    ==    Equality  
