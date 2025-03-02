@@ -26,7 +26,8 @@ For comparing two objects (of a class), in other languages, there is something c
 What just means you can write a function that has an operator-character as the "function name".  
 In VBA/VBC we do not have operator overloading, but we do not bother, we even do not need this.  
 It is just "syntactic sugar" to make code more readable, but imho it does not fulfill it's purpose in every
-situation. In fact writing named member-functions is readable enough for comparing two objects.  
+situation.  
+In fact writing named member-functions is readable enough for comparing two objects.  
   
 So have a look at the list above. Do we need a function for every operator, for every possible comparison?  
 Yes, we maybe actually need all the above functions, but did you know that we actually need only 2 functions,
