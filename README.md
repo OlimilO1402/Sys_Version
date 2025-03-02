@@ -6,20 +6,20 @@
 [![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Sys_Version/total.svg)](https://github.com/OlimilO1402/Sys_Version/releases/download/v2025.3.2/Sys_Version_v2025.3.2.zip)
 ![GitHub followers](https://img.shields.io/github/followers/OlimilO1402?style=social)
 
-Easy Comparing
-==============
-
+Easy Comparing  
+==============  
+  
 for comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.  
 like the following:  
  VB    C#    meaning  
-----------------------------------  
-* =    ==    Equality  
-* <>   !=    Not Equal  
-* <=   <=    Less then or equal  
-* >=   >=    Greater then or equal  
-* <    <     Less then  
-* >    >     Greater then  
-** special: int CompareTo(other)  
+ ----------------------------------  
+ * =    ==    Equality  
+ * <>   !=    Not Equal  
+ * <=   <=    Less then or equal  
+ * >=   >=    Greater then or equal  
+ * /<    <     Less then  
+ * />    >     Greater then  
+ ** special: int CompareTo(other)  
 
 For comparing two objects (of a class), in other languages, there is something called operator overloading.  
 What just means you can write a function that has an operator-character as the "function name".  
