@@ -13,14 +13,14 @@ For comparing e.g. two numbers in any serious programming language, there are th
 like the following:  
   
  |  VB   |  C#   |  meaning  
- ----------------------------------  
+ |:-----:|:-----:|:----------------  
  |  =    |  ==   |  Equality  
  |  \<>  |  !=   |  Not Equal  
  |  \<=  |  \<=  |  Less then or equal  
  |  \>=  |  \>=  |  Greater then or equal  
  |  \<   |  \<   |  Less then  
  |  \>   |  \>   |  Greater then  
- | ** special: int CompareTo(other)  
+ | special: int CompareTo(other)  
 
 For comparing two objects (of a class), in other languages, there is something called operator overloading.  
 What just means you can write a function that has an operator-character as the "function name".  
