@@ -12,14 +12,14 @@ Easy Comparing
 For comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.  
 like the following:  
   
- VB    C#    meaning  
+ VB  	C#	meaning  
  ----------------------------------  
- * =    ==    Equality  
- * <>   !=    Not Equal  
- * <=   <=    Less then or equal  
- * >=   >=    Greater then or equal  
- * /<    <     Less then  
- * />    >     Greater then  
+ * =	==	Equality  
+ * <>	!=	Not Equal  
+ * <=	<=	Less then or equal  
+ * >=	>=	Greater then or equal  
+ * \<	<	Less then  
+ * \>	>	Greater then  
  ** special: int CompareTo(other)  
 
 For comparing two objects (of a class), in other languages, there is something called operator overloading.  
