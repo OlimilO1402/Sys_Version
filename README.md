@@ -3,7 +3,7 @@
 
 [![GitHub](https://img.shields.io/github/license/OlimilO1402/Sys_Version?style=plastic)](https://github.com/OlimilO1402/Sys_Version/blob/master/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/OlimilO1402/Sys_Version?style=plastic)](https://github.com/OlimilO1402/Sys_Version/releases/latest)
-[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Sys_Version/total.svg)](https://github.com/OlimilO1402/Sys_Version/releases/download/v2025.3.2/Sys_Version_v2025.3.2.zip)
+[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Sys_Version/total.svg)](https://github.com/OlimilO1402/Sys_Version/releases/download/v2025.3.2/Version_v2025.3.2.zip)
 ![GitHub followers](https://img.shields.io/github/followers/OlimilO1402?style=social)
 
 Easy Comparing  

@@ -1,10 +1,10 @@
 VERSION 5.00
-Begin VB.Form Form1 
-   Caption         =   "Form1"
-   ClientHeight    =   7230
+Begin VB.Form FMain 
+   Caption         =   "Version"
+   ClientHeight    =   10230
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   10215
+   ClientWidth     =   9375
    BeginProperty Font 
       Name            =   "Segoe UI"
       Size            =   9.75
@@ -15,8 +15,8 @@ Begin VB.Form Form1
       Strikethrough   =   0   'False
    EndProperty
    LinkTopic       =   "Form1"
-   ScaleHeight     =   7230
-   ScaleWidth      =   10215
+   ScaleHeight     =   10230
+   ScaleWidth      =   9375
    StartUpPosition =   3  'Windows-Standard
    Begin VB.TextBox Text1 
       BeginProperty Font 
@@ -28,13 +28,13 @@ Begin VB.Form Form1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   6615
+      Height          =   9615
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
       TabIndex        =   1
       Top             =   600
-      Width           =   10215
+      Width           =   9375
    End
    Begin VB.CommandButton BtnTestVersion 
       Caption         =   "Test Class Version"
@@ -45,7 +45,7 @@ Begin VB.Form Form1
       Width           =   2175
    End
 End
-Attribute VB_Name = "Form1"
+Attribute VB_Name = "FMain"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -53,11 +53,15 @@ Attribute VB_Exposed = False
 Option Explicit
 Private m_IndentStack As Byte
 
+Private Sub Form_Load()
+    Me.Caption = "Version Class v" & MNew.VersionA.ToStr
+End Sub
+
 Private Sub Form_Resize()
-    Dim L As Single, t As Single: t = Text1.Top
+    Dim l As Single, t As Single: t = Text1.Top
     Dim W As Single: W = Me.ScaleWidth
     Dim H As Single: H = Me.ScaleHeight - t
-    If W > 0 And H > 0 Then Text1.Move L, t, W, H
+    If W > 0 And H > 0 Then Text1.Move l, t, W, H
 End Sub
 
 Private Sub IndentStack_Push()
@@ -74,9 +78,11 @@ Private Sub BtnTestVersion_Click()
     DebugPrint ""
     
     IndentStack_Push
-    TestCtors
     
+    TestCtors
     TestComparing
+    TestFileVersionInfo
+    
     IndentStack_Pop
     
 End Sub
@@ -87,27 +93,27 @@ Sub TestCtors()
     DebugPrint "-----------------"
     IndentStack_Push
     
-    Dim ver As Version
+    Dim Ver As version
     
-    Set ver = New Version
-    DebugPrint ver.ToStr '0.0.-1.-1
-    DebugPrint ver.Major & "." & ver.Minor & "." & ver.Build & "." & ver.Revision & "." & ver.MajorRevision & "." & ver.MinorRevision   '0.0.-1.-1.-1.-1
+    Set Ver = New version
+    DebugPrint Ver.ToStr '0.0.-1.-1
+    DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision   '0.0.-1.-1.-1.-1
     
-    Set ver = MNew.Version(1, 2, 3, 4)
-    DebugPrint ver.ToStr '1.2.3.4
-    DebugPrint ver.Major & "." & ver.Minor & "." & ver.Build & "." & ver.Revision & "." & ver.MajorRevision & "." & ver.MinorRevision   '1.2.3.4.0.4
+    Set Ver = MNew.version(1, 2, 3, 4)
+    DebugPrint Ver.ToStr '1.2.3.4
+    DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision   '1.2.3.4.0.4
     
-    Set ver = MNew.VersionS("1.2.3.4")
-    DebugPrint ver.ToStr '1.2.3.4
-    DebugPrint ver.Major & "." & ver.Minor & "." & ver.Build & "." & ver.Revision & "." & ver.MajorRevision & "." & ver.MinorRevision '1.2.3.4.0.4
+    Set Ver = MNew.VersionS("1.2.3.4")
+    DebugPrint Ver.ToStr '1.2.3.4
+    DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '1.2.3.4.0.4
     
-    Set ver = MNew.Version(1, 2, &H1234, &H43215678)
-    DebugPrint ver.ToStr '1.2.4660.1126258296.17185.22136
-    DebugPrint ver.Major & "." & ver.Minor & "." & ver.Build & "." & ver.Revision & "." & ver.MajorRevision & "." & ver.MinorRevision '1.2.4660.1126258296.17185.22136
+    Set Ver = MNew.version(1, 2, &H1234, &H43215678)
+    DebugPrint Ver.ToStr '1.2.4660.1126258296.17185.22136
+    DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '1.2.4660.1126258296.17185.22136
     
-    Set ver = MNew.VersionA
-    DebugPrint ver.ToStr '2025.3.1
-    DebugPrint ver.Major & "." & ver.Minor & "." & ver.Build & "." & ver.Revision & "." & ver.MajorRevision & "." & ver.MinorRevision '2025.3.1.0.1
+    Set Ver = MNew.VersionA
+    DebugPrint Ver.ToStr '2025.3.1
+    DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '2025.3.1.0.1
     
     DebugPrint ""
     
@@ -121,9 +127,9 @@ Sub TestComparing()
     DebugPrint "--------------"
     IndentStack_Push
 
-    Dim v1 As Version, v2 As Version
+    Dim v1 As version, v2 As version
     
-    Set v1 = MNew.Version(2025, 3, 1, 1): Set v2 = v1.Clone
+    Set v1 = MNew.version(2025, 3, 1, 1): Set v2 = v1.Clone
     DoAllComparings v1, v2
     
     v2.Revision = v2.Revision + 1
@@ -135,7 +141,25 @@ Sub TestComparing()
     IndentStack_Pop
 End Sub
 
-Sub DoAllComparings(v1 As Version, v2 As Version)
+Private Sub TestFileVersionInfo()
+    
+    DebugPrint "Test FileVersionInfo"
+    DebugPrint "--------------------"
+    IndentStack_Push
+    
+    Dim FVI1 As FileVersionInfo: Set FVI1 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "1.exe")
+    Dim FVI2 As FileVersionInfo: Set FVI2 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "2.exe")
+    
+    Dim Ver1 As version:         Set Ver1 = MNew.VersionS(FVI1.ProductVersion)
+    Dim Ver2 As version:         Set Ver2 = MNew.VersionS(FVI2.ProductVersion)
+    
+    DoAllComparings Ver1, Ver2
+    
+    IndentStack_Pop
+    
+End Sub
+
+Sub DoAllComparings(v1 As version, v2 As version)
     If v1.Equals(v2) Then DebugPrint "v1(" & v1.ToStr & ") = v2(" & v2.ToStr & ")"
     If Not v1.Equals(v2) Then DebugPrint "v1(" & v1.ToStr & ") <> v2(" & v2.ToStr & ")"
     If v1.IsLessThen(v2) Then DebugPrint "v1(" & v1.ToStr & ") < v2(" & v2.ToStr & ")"

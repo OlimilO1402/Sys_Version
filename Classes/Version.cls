@@ -47,12 +47,13 @@ Friend Sub NewS(VersionString As String)
     If u >= 3 Then m_Ver.Revision.Value = CLng(sa(3))
 End Sub
 Friend Sub NewA()
+    'there is no property Build in VB so Build gets the Revision number? nope
     New_ App.Major, App.Minor, 0, App.Revision
 End Sub
 
 'Copy to MNew:
-'Public Function Version(ByVal aMajor As Long, ByVal aMinor As Long, Optional ByVal aRevision As Long = -1, Optional ByVal aBuild As Long = -1) As Version
-'    Set Version = New Version: Version.New_ aMajor, aMinor, aRevision, aBuild
+'Public Function Version(ByVal aMajor As Long, ByVal aMinor As Long, Optional ByVal aBuild As Long = -1, Optional ByVal aRevision As Long = -1) As Version
+'    Set Version = New Version: Version.New_ aMajor, aMinor, aBuild, aRevision
 'End Function
 'Public Function VersionS(ByVal VersionString As String) As Version
 '    Set VersionS = New Version: VersionS.NewS VersionString
@@ -61,7 +62,7 @@ End Sub
 '    Set VersionA = New Version: VersionA.NewA
 'End Function
 
-Friend Sub NewC(Other As Version)
+Friend Sub NewC(Other As version)
     With Other: m_Ver.Major = .Major: m_Ver.Minor = .Minor: m_Ver.Build = .Build: m_Ver.Revision.Value = .Revision: End With
 End Sub
 
@@ -69,11 +70,11 @@ Public Property Get Ptr() As LongPtr
     Ptr = VarPtr(m_Ver)
 End Property
 
-Public Function Clone() As Version
-    Set Clone = New Version: Clone.NewC Me
+Public Function Clone() As version
+    Set Clone = New version: Clone.NewC Me
 End Function
 
-Public Function Equals(Other As Version) As Boolean
+Public Function Equals(Other As version) As Boolean
     If Me.Major <> Other.Major Then Exit Function
     If Me.Minor <> Other.Minor Then Exit Function
     If Me.Build <> Other.Build Then Exit Function
@@ -81,36 +82,36 @@ Public Function Equals(Other As Version) As Boolean
     Equals = True
 End Function
 
-Private Function IsGreaterOrEqual(Version As Version, Other As Version) As Boolean
-    If Version.Major < Other.Major Then Exit Function
-    If Version.Minor < Other.Minor Then Exit Function
-    If Version.Build < Other.Build Then Exit Function
-    If Version.Revision < Other.Revision Then Exit Function
+Private Function IsGreaterOrEqual(version As version, Other As version) As Boolean
+    If version.Major < Other.Major Then Exit Function
+    If version.Minor < Other.Minor Then Exit Function
+    If version.Build < Other.Build Then Exit Function
+    If version.Revision < Other.Revision Then Exit Function
     IsGreaterOrEqual = True
 End Function
 
-Public Function IsLessThen(Other As Version) As Boolean
+Public Function IsLessThen(Other As version) As Boolean
     IsLessThen = IsGreater(Other, Me)
 End Function
 
-Public Function IsLessThenOrEqual(Other As Version) As Boolean
+Public Function IsLessThenOrEqual(Other As version) As Boolean
     IsLessThenOrEqual = IsGreaterOrEqual(Other, Me)
 End Function
 
-Public Function IsGreaterThen(Other As Version) As Boolean
+Public Function IsGreaterThen(Other As version) As Boolean
     IsGreaterThen = IsGreater(Me, Other)
 End Function
 
-Public Function IsGreaterThenOrEqual(Other As Version) As Boolean
+Public Function IsGreaterThenOrEqual(Other As version) As Boolean
     IsGreaterThenOrEqual = IsGreaterOrEqual(Me, Other)
 End Function
 
-Private Function IsGreater(Version As Version, Other As Version) As Boolean
-    If Not IsGreaterOrEqual(Version, Other) Then Exit Function
-    IsGreater = Not Version.Equals(Other)
+Private Function IsGreater(version As version, Other As version) As Boolean
+    If Not IsGreaterOrEqual(version, Other) Then Exit Function
+    IsGreater = Not version.Equals(Other)
 End Function
 
-Public Function CompareTo(Other As Version) As Long
+Public Function CompareTo(Other As version) As Long
     If Me.Equals(Other) Then Exit Function
     If Me.IsLessThen(Other) Then CompareTo = -1: Exit Function
     If Me.IsGreaterThen(Other) Then CompareTo = 1: Exit Function
