@@ -1,31 +1,31 @@
 # Sys_Version  
-## Easy Comparing  
+## Easy Comparison  
 
 [![GitHub](https://img.shields.io/github/license/OlimilO1402/Sys_Version?style=plastic)](https://github.com/OlimilO1402/Sys_Version/blob/master/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/OlimilO1402/Sys_Version?style=plastic)](https://github.com/OlimilO1402/Sys_Version/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Sys_Version/total.svg)](https://github.com/OlimilO1402/Sys_Version/releases/download/v2025.3.2/Version_v2025.3.2.zip)
 ![GitHub followers](https://img.shields.io/github/followers/OlimilO1402?style=social)
 
-Easy Comparing  
-==============  
+Easy Comparison  
+===============  
   
 For comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.  
 like the following:  
   
- VB			C#		meaning  
+ |  VB   |  C#   |  meaning  
  ----------------------------------  
- * =		==		Equality  
- * \<>		!=		Not Equal  
- * \<=		\<=		Less then or equal  
- * \>=		\>=		Greater then or equal  
- * \<		\<		Less then  
- * \>		\>		Greater then  
- ** special: int CompareTo(other)  
+ |  =    |  ==   |  Equality  
+ |  \<>  |  !=   |  Not Equal  
+ |  \<=  |  \<=  |  Less then or equal  
+ |  \>=  |  \>=  |  Greater then or equal  
+ |  \<   |  \<   |  Less then  
+ |  \>   |  \>   |  Greater then  
+ | ** special: int CompareTo(other)  
 
 For comparing two objects (of a class), in other languages, there is something called operator overloading.  
 What just means you can write a function that has an operator-character as the "function name".  
 In VBA/VBC we do not have operator overloading, but we do not bother, we even do not need this.  
-It is just "syntactic sugar" to make code more readable, but imho it does not fulfill it's purpose in every
+It is just "syntactic sugar" to make code more readable, and imho it does not fulfill it's purpose in every
 situation.  
 In fact writing named member-functions is readable enough for comparing two objects.  
   
