@@ -121,6 +121,10 @@ Sub TestCtors()
     DebugPrint Ver.ToStr '2025.3.1
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '2025.3.1.0.1
     
+    Set Ver = MNew.VersionD
+    DebugPrint Ver.ToStr '2025.3.0.4
+    DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '2025.3.1.0.1
+    
     DebugPrint ""
     
     IndentStack_Pop
@@ -235,23 +239,25 @@ End Sub
 'Easy Comparison
 '===============
 '
-'for comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.
+'For comparing two numbers, in any serious programming language, there are the typical operator characters of course everybody knows.
 'like the following:
-' VB    C#    meaning
-'----------------------------------
-'* =    ==    Equality
-'* <>   !=    Not Equal
-'* <=   <=    Less then or equal
-'* >=   >=    Greater then or equal
-'* <    <     Less then
-'* >    >     Greater then
-'** special: int CompareTo(other)
 '
-'for comparing two objects (of a class), in other languages, there is something called operator overloading.
-'What just means you can write a function that has an operator-character as the "function name".
+' |  VB   |  C#   |  meaning
+' |:-----:|:-----:|:----------------
+' |  =    |  ==   |  Equality
+' |  \<>  |  !=   |  Not Equal
+' |  \<=  |  \<=  |  Less then or equal
+' |  \>=  |  \>=  |  Greater then or equal
+' |  \<   |  \<   |  Less then
+' |  \>   |  \>   |  Greater then
+' |       |       |  int CompareTo(other)
+'
+'For comparing two objects (of a class), in other languages, there is something called operator overloading.
+'What means something like you can write a function that has an operator-character as the "function name".
 'In VBA/VBC we do not have operator overloading, but we do not bother, we even do not need this.
-'It is just "syntactic sugar" to make code more readable, but imho it does not fulfill it's purpose in every
-'situation. In fact writing named member-functions is readable enough for comparing two objects.
+'It is just "syntactic sugar" to make code more readable, and imho it does not fulfill his purpose in every
+'situation.
+'In fact writing named member-functions is readable enough for comparing two objects.
 '
 'So have a look at the list above. Do we need a function for every operator, for every possible comparison?
 'Yes, we maybe actually need all the above functions, but did you know that we actually need only 2 functions,
@@ -260,22 +266,21 @@ End Sub
 'In VBA/VBC we dim a Boolean and per se the boolean has the value "False". VB does this for us, so there is no
 'need for an extra initialization of a Boolean variable or also even a Boolean function.
 '
-'the 2 functions we need are
-'* a public member function "Equals" where we just hand over the "other" object and
-'* a private function "IsGreaterOrEqual" where we give two objects;
-'  this functions could also be static/shared in a standard module ...
+'The 2 functions we need are:
+'* a public member function "Equals" and
+'* a private member function "CheckGreater";
 '
-'...and all the other operator-functions are just combinations of this two functions.
+'where we just hand over the "other" object, and all the other operator-functions are just combinations of this two functions.
 '
 'To give this something what actually makes sense we could imagine a class "Version" with the
-'member properties Major, Minor, Build And Revision
-'(compare: Version class https://learn.microsoft.com/en-us/dotnet/api/system.Version?view=net-8.0 )
-'Maybe we have a situation where we have different Versions of a file or a program, and in our program
-'we want to react on it
+'member properties Major, Minor, Build And Revision ([compare: Version class](https://learn.microsoft.com/en-us/dotnet/api/system.version?view=net-8.0))
+'Maybe we have a situation where we have different versions of a file or a program, and in our program
+'we want to react on it.
+'Here are the 2 main full-size functions we need:
 '
-'here are the 2 main full-size functions we need:
-'
+'```vba
 'Public Function Equals(Other As Version) As Boolean
+'   If Other Is Nothing Then Exit Function
 '    If Me.Major <> Other.Major Then Exit Function
 '    If Me.Minor <> Other.Minor Then Exit Function
 '    If Me.Build <> Other.Build Then Exit Function
@@ -283,45 +288,47 @@ End Sub
 '    Equals = True
 'End Function
 '
-'Private Function IsGreaterOrEqual(Version As Version, Other As Version) As Boolean
-'    If Version.Major < Other.Major Then Exit Function
-'    If Version.Minor < Other.Minor Then Exit Function
-'    If Version.Build < Other.Build Then Exit Function
-'    If Version.Revision < Other.Revision Then Exit Function
-'    IsGreaterOrEqual = True
+'Private Function CheckGreater(Other As Version) As Boolean
+'    If Other Is Nothing Then CheckGreater = True: Exit Function
+'    If Me.Major < Other.Major Then Exit Function
+'    If Me.Minor < Other.Minor Then Exit Function
+'    If Me.Build < Other.Build Then Exit Function
+'    If Me.Revision < Other.Revision Then Exit Function
+'    CheckGreater = True
 'End Function
+'```
 '
-'and here are the very slim functions for all other comparisons:
+'And here are the very slim functions for all other comparisons:
 '
+'```vba
 'Public Function IsLessThen(Other As Version) As Boolean
-'    IsLessThen = IsGreater(Other, Me)
+'    If Me.Equals(Other) Then Exit Function
+'    IsLessThen = Not CheckGreater(Other)
 'End Function
 '
 'Public Function IsLessThenOrEqual(Other As Version) As Boolean
-'    IsLessThenOrEqual = IsGreaterOrEqual(Other, Me)
+'    If Me.Equals(Other) Then IsLessThenOrEqual = True: Exit Function
+'    IsLessThenOrEqual = Not CheckGreater(Other)
 'End Function
 '
 'Public Function IsGreaterThen(Other As Version) As Boolean
-'    IsGreaterThen = IsGreater(Me, Other)
+'    If Me.Equals(Other) Then Exit Function
+'    IsGreaterThen = CheckGreater(Other)
 'End Function
 '
 'Public Function IsGreaterThenOrEqual(Other As Version) As Boolean
-'    IsGreaterThenOrEqual = IsGreaterOrEqual(Me, Other)
-'End Function
-'
-'Private Function IsGreater(Version As Version, Other As Version) As Boolean
-'    If Not IsGreaterOrEqual(Version, Other) Then Exit Function
-'    IsGreater = Not Version.Equals(Other)
+'    If Me.Equals(Other) Then IsGreaterThenOrEqual = True: Exit Function
+'    IsGreaterThenOrEqual = CheckGreater(Other)
 'End Function
 '
 'Public Function CompareTo(Other As Version) As Long
 '    If Me.Equals(Other) Then Exit Function
-'    If Me.IsLessThen(Other) Then CompareTo = -1: Exit Function
-'    If Me.IsGreaterThen(Other) Then CompareTo = 1: Exit Function
+'    If CheckGreater(Other) Then CompareTo = 1 Else CompareTo = -1
 'End Function
+'```
 '
-'and pay attention on what comparing-operator charcters we actually needed:
-'just "<> Not Equal" and "< Less then"
+'Pay attention on what comparing operator characters was actually needed:
+'just "<> Not Equal" and "< Less then", no need for the other operator-characters.
+'I mean you could, but you don't have to, and it could make the code not better but even less readable.
 '
-'there acually is no need for the other operator-characters
-'
+'![Version Image](Resources/Version.png "Version Image")
