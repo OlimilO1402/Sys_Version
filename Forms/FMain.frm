@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form FMain 
    Caption         =   "Version"
-   ClientHeight    =   10230
+   ClientHeight    =   11295
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   9375
@@ -15,7 +15,7 @@ Begin VB.Form FMain
       Strikethrough   =   0   'False
    EndProperty
    LinkTopic       =   "Form1"
-   ScaleHeight     =   10230
+   ScaleHeight     =   11295
    ScaleWidth      =   9375
    StartUpPosition =   3  'Windows-Standard
    Begin VB.TextBox Text1 
@@ -28,7 +28,7 @@ Begin VB.Form FMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   9615
+      Height          =   10695
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
@@ -55,6 +55,7 @@ Private m_IndentStack As Byte
 
 Private Sub Form_Load()
     Me.Caption = "Version Class v" & MNew.VersionA.ToStr
+    BtnTestVersion.Value = True
 End Sub
 
 Private Sub Form_Resize()
@@ -73,6 +74,9 @@ Private Sub IndentStack_Pop()
 End Sub
 
 Private Sub BtnTestVersion_Click()
+    
+    Text1.Text = vbNullString
+    
     DebugPrint "Test Class Version"
     DebugPrint "=================="
     DebugPrint ""
@@ -82,6 +86,8 @@ Private Sub BtnTestVersion_Click()
     TestCtors
     TestComparing
     TestFileVersionInfo
+    TestRandom
+    TestTodayNYesterday
     
     IndentStack_Pop
     
@@ -93,13 +99,13 @@ Sub TestCtors()
     DebugPrint "-----------------"
     IndentStack_Push
     
-    Dim Ver As version
+    Dim Ver As Version
     
-    Set Ver = New version
+    Set Ver = New Version
     DebugPrint Ver.ToStr '0.0.-1.-1
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision   '0.0.-1.-1.-1.-1
     
-    Set Ver = MNew.version(1, 2, 3, 4)
+    Set Ver = MNew.Version(1, 2, 3, 4)
     DebugPrint Ver.ToStr '1.2.3.4
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision   '1.2.3.4.0.4
     
@@ -107,7 +113,7 @@ Sub TestCtors()
     DebugPrint Ver.ToStr '1.2.3.4
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '1.2.3.4.0.4
     
-    Set Ver = MNew.version(1, 2, &H1234, &H43215678)
+    Set Ver = MNew.Version(1, 2, &H1234, &H43215678)
     DebugPrint Ver.ToStr '1.2.4660.1126258296.17185.22136
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '1.2.4660.1126258296.17185.22136
     
@@ -123,22 +129,58 @@ End Sub
 
 Sub TestComparing()
     
-    DebugPrint "Test Comparing"
-    DebugPrint "--------------"
+    DebugPrint "Test Comparisons"
+    DebugPrint "----------------"
     IndentStack_Push
-
-    Dim v1 As version, v2 As version
     
-    Set v1 = MNew.version(2025, 3, 1, 1): Set v2 = v1.Clone
-    DoAllComparings v1, v2
+    Dim v1 As Version, v2 As Version
+    
+    Set v1 = MNew.Version(2025, 3, 1, 1): Set v2 = v1.Clone
+    DoAllComparisons v1, v2
     
     v2.Revision = v2.Revision + 1
-    DoAllComparings v1, v2
+    DoAllComparisons v1, v2
     
     v1.Revision = v2.Revision + 1
-    DoAllComparings v1, v2
-        
+    DoAllComparisons v1, v2
+    
     IndentStack_Pop
+    
+End Sub
+
+Sub TestRandom()
+    
+    DebugPrint "Test Random Version"
+    DebugPrint "-------------------"
+    IndentStack_Push
+    Dim v1 As Version, v2 As Version
+    
+    Set v1 = MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
+    Set v2 = v1.Clone 'MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
+    DoAllComparisons v1, v2
+    
+    v1.Major = v1.Major + 1
+    DoAllComparisons v1, v2
+    
+    v2.Major = v1.Major + 1
+    DoAllComparisons v1, v2
+    
+    Set v1 = MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
+    Set v2 = v1.Clone 'MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
+    DoAllComparisons v1, v2
+    
+    v1.Minor = v1.Minor + 1
+    DoAllComparisons v1, v2
+    
+    v2.Minor = v1.Minor + 1
+    DoAllComparisons v1, v2
+    
+    Set v1 = MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
+    Set v2 = MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
+    DoAllComparisons v1, v2
+    
+    IndentStack_Pop
+    
 End Sub
 
 Private Sub TestFileVersionInfo()
@@ -150,16 +192,31 @@ Private Sub TestFileVersionInfo()
     Dim FVI1 As FileVersionInfo: Set FVI1 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "1.exe")
     Dim FVI2 As FileVersionInfo: Set FVI2 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "2.exe")
     
-    Dim Ver1 As version:         Set Ver1 = MNew.VersionS(FVI1.ProductVersion)
-    Dim Ver2 As version:         Set Ver2 = MNew.VersionS(FVI2.ProductVersion)
+    Dim Ver1 As Version:         Set Ver1 = MNew.VersionS(FVI1.ProductVersion)
+    Dim Ver2 As Version:         Set Ver2 = MNew.VersionS(FVI2.ProductVersion)
     
-    DoAllComparings Ver1, Ver2
+    DoAllComparisons Ver1, Ver2
     
     IndentStack_Pop
     
 End Sub
 
-Sub DoAllComparings(v1 As version, v2 As version)
+Private Sub TestTodayNYesterday()
+    
+    DebugPrint "Test Today and Yesterday"
+    DebugPrint "------------------------"
+    IndentStack_Push
+
+    Dim tod As Version: Set tod = MNew.VersionD
+    Dim yed As Version: Set yed = MNew.VersionD(tod.ToDate - 1)
+    
+    DoAllComparisons tod, yed
+    
+    IndentStack_Pop
+    
+End Sub
+
+Sub DoAllComparisons(v1 As Version, v2 As Version)
     If v1.Equals(v2) Then DebugPrint "v1(" & v1.ToStr & ") = v2(" & v2.ToStr & ")"
     If Not v1.Equals(v2) Then DebugPrint "v1(" & v1.ToStr & ") <> v2(" & v2.ToStr & ")"
     If v1.IsLessThen(v2) Then DebugPrint "v1(" & v1.ToStr & ") < v2(" & v2.ToStr & ")"
@@ -175,8 +232,8 @@ Sub DebugPrint(ByVal s As String)
     Text1.Text = Text1.Text & s & vbCrLf
 End Sub
 
-'Easy Comparing
-'==============
+'Easy Comparison
+'===============
 '
 'for comparing e.g. two numbers in any serious programming language, there are the typical operator characters of course everybody knows.
 'like the following:
@@ -212,8 +269,8 @@ End Sub
 '
 'To give this something what actually makes sense we could imagine a class "Version" with the
 'member properties Major, Minor, Build And Revision
-'(compare: Version class https://learn.microsoft.com/en-us/dotnet/api/system.version?view=net-8.0 )
-'Maybe we have a situation where we have different versions of a file or a program, and in our program
+'(compare: Version class https://learn.microsoft.com/en-us/dotnet/api/system.Version?view=net-8.0 )
+'Maybe we have a situation where we have different Versions of a file or a program, and in our program
 'we want to react on it
 '
 'here are the 2 main full-size functions we need:

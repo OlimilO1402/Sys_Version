@@ -32,6 +32,7 @@ End Type
 Private m_Ver As TVersion
 
 Private Sub Class_Initialize()
+    'just in case you set New w/o calling any ctor below
     m_Ver.Build = -1: m_Ver.Revision.Value = -1
 End Sub
 
@@ -47,8 +48,12 @@ Friend Sub NewS(VersionString As String)
     If u >= 3 Then m_Ver.Revision.Value = CLng(sa(3))
 End Sub
 Friend Sub NewA()
-    'there is no property Build in VB so Build gets the Revision number? nope
+    'there is no property Build in VB so Build gets the Revision number? nope, revision to revision
     New_ App.Major, App.Minor, 0, App.Revision
+End Sub
+Friend Sub NewD(Optional DateValue)
+    If IsMissing(DateValue) Then DateValue = Now
+    New_ Year(DateValue), Month(DateValue), 0, Day(DateValue)
 End Sub
 
 'Copy to MNew:
@@ -61,8 +66,11 @@ End Sub
 'Public Function VersionA() As Version
 '    Set VersionA = New Version: VersionA.NewA
 'End Function
+'Public Function VersionD(Optional DateValue) As Version
+'    Set VersionD = New Version: VersionD.NewD DateValue
+'End Function
 
-Friend Sub NewC(Other As version)
+Friend Sub NewC(Other As Version)
     With Other: m_Ver.Major = .Major: m_Ver.Minor = .Minor: m_Ver.Build = .Build: m_Ver.Revision.Value = .Revision: End With
 End Sub
 
@@ -70,55 +78,16 @@ Public Property Get Ptr() As LongPtr
     Ptr = VarPtr(m_Ver)
 End Property
 
-Public Function Clone() As version
-    Set Clone = New version: Clone.NewC Me
-End Function
-
-Public Function Equals(Other As version) As Boolean
-    If Me.Major <> Other.Major Then Exit Function
-    If Me.Minor <> Other.Minor Then Exit Function
-    If Me.Build <> Other.Build Then Exit Function
-    If Me.Revision <> Other.Revision Then Exit Function
-    Equals = True
-End Function
-
-Private Function IsGreaterOrEqual(version As version, Other As version) As Boolean
-    If version.Major < Other.Major Then Exit Function
-    If version.Minor < Other.Minor Then Exit Function
-    If version.Build < Other.Build Then Exit Function
-    If version.Revision < Other.Revision Then Exit Function
-    IsGreaterOrEqual = True
-End Function
-
-Public Function IsLessThen(Other As version) As Boolean
-    IsLessThen = IsGreater(Other, Me)
-End Function
-
-Public Function IsLessThenOrEqual(Other As version) As Boolean
-    IsLessThenOrEqual = IsGreaterOrEqual(Other, Me)
-End Function
-
-Public Function IsGreaterThen(Other As version) As Boolean
-    IsGreaterThen = IsGreater(Me, Other)
-End Function
-
-Public Function IsGreaterThenOrEqual(Other As version) As Boolean
-    IsGreaterThenOrEqual = IsGreaterOrEqual(Me, Other)
-End Function
-
-Private Function IsGreater(version As version, Other As version) As Boolean
-    If Not IsGreaterOrEqual(version, Other) Then Exit Function
-    IsGreater = Not version.Equals(Other)
-End Function
-
-Public Function CompareTo(Other As version) As Long
-    If Me.Equals(Other) Then Exit Function
-    If Me.IsLessThen(Other) Then CompareTo = -1: Exit Function
-    If Me.IsGreaterThen(Other) Then CompareTo = 1: Exit Function
+Public Function Clone() As Version
+    Set Clone = New Version: Clone.NewC Me
 End Function
 
 Friend Function ToStr() As String
     ToStr = m_Ver.Major & "." & m_Ver.Minor & IIf(m_Ver.Build = -1, "", "." & m_Ver.Build) & IIf(m_Ver.Revision.Value = -1, "", "." & m_Ver.Revision.Value)
+End Function
+
+Friend Function ToDate() As Date
+    ToDate = DateSerial(Me.Major, Me.Minor, Me.Revision)
 End Function
 
 Public Property Get Major() As Long
@@ -159,3 +128,48 @@ Public Property Get MinorRevision() As Integer
     MinorRevision = thilo.Lo
 End Property
 
+' v ############################## v '    Comparison Operators    ' v ############################## v '
+Public Function Equals(Other As Version) As Boolean
+    If Other Is Nothing Then Exit Function
+    If Me.Major <> Other.Major Then Exit Function
+    If Me.Minor <> Other.Minor Then Exit Function
+    If Me.Build <> Other.Build Then Exit Function
+    If Me.Revision <> Other.Revision Then Exit Function
+    Equals = True
+End Function
+
+Private Function CheckGreater(Other As Version) As Boolean
+    If Other Is Nothing Then CheckGreater = True: Exit Function
+    If Me.Major < Other.Major Then Exit Function
+    If Me.Minor < Other.Minor Then Exit Function
+    If Me.Build < Other.Build Then Exit Function
+    If Me.Revision < Other.Revision Then Exit Function
+    CheckGreater = True
+End Function
+
+Public Function IsLessThen(Other As Version) As Boolean
+    If Me.Equals(Other) Then Exit Function
+    IsLessThen = Not CheckGreater(Other)
+End Function
+
+Public Function IsLessThenOrEqual(Other As Version) As Boolean
+    If Me.Equals(Other) Then IsLessThenOrEqual = True: Exit Function
+    IsLessThenOrEqual = Not CheckGreater(Other)
+End Function
+
+Public Function IsGreaterThen(Other As Version) As Boolean
+    If Me.Equals(Other) Then Exit Function
+    IsGreaterThen = CheckGreater(Other)
+End Function
+
+Public Function IsGreaterThenOrEqual(Other As Version) As Boolean
+    If Me.Equals(Other) Then IsGreaterThenOrEqual = True: Exit Function
+    IsGreaterThenOrEqual = CheckGreater(Other)
+End Function
+
+Public Function CompareTo(Other As Version) As Long
+    If Me.Equals(Other) Then Exit Function
+    If CheckGreater(Other) Then CompareTo = 1 Else CompareTo = -1
+End Function
+
+' ^ ############################## ^ '    Comparison Operators    ' ^ ############################## ^ '
