@@ -14,6 +14,7 @@ Begin VB.Form FMain
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   Icon            =   "FMain.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   11295
    ScaleWidth      =   9375
@@ -84,10 +85,10 @@ Private Sub BtnTestVersion_Click()
     IndentStack_Push
     
     TestCtors
-    TestComparing
-    TestFileVersionInfo
-    TestRandom
     TestTodayNYesterday
+    TestFileVersionInfo
+    TestComparisons
+    TestRandom
     
     IndentStack_Pop
     
@@ -102,27 +103,27 @@ Sub TestCtors()
     Dim Ver As Version
     
     Set Ver = New Version
-    DebugPrint Ver.ToStr '0.0.-1.-1
+    DebugPrint "Set Ver = New Version : " & Ver.ToStr '0.0.-1.-1
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision   '0.0.-1.-1.-1.-1
     
     Set Ver = MNew.Version(1, 2, 3, 4)
-    DebugPrint Ver.ToStr '1.2.3.4
+    DebugPrint "Set Ver = MNew.Version(1, 2, 3, 4) : " & Ver.ToStr '1.2.3.4
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision   '1.2.3.4.0.4
     
     Set Ver = MNew.VersionS("1.2.3.4")
-    DebugPrint Ver.ToStr '1.2.3.4
+    DebugPrint "Set Ver = MNew.VersionS(""1.2.3.4"") : " & Ver.ToStr '1.2.3.4
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '1.2.3.4.0.4
     
     Set Ver = MNew.Version(1, 2, &H1234, &H43215678)
-    DebugPrint Ver.ToStr '1.2.4660.1126258296.17185.22136
+    DebugPrint "Set Ver = MNew.Version(1, 2, &H1234, &H43215678) : " & Ver.ToStr '1.2.4660.1126258296.17185.22136
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '1.2.4660.1126258296.17185.22136
     
     Set Ver = MNew.VersionA
-    DebugPrint Ver.ToStr '2025.3.1
+    DebugPrint "Set Ver = MNew.VersionA : " & Ver.ToStr '2025.3.1
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '2025.3.1.0.1
     
     Set Ver = MNew.VersionD
-    DebugPrint Ver.ToStr '2025.3.0.4
+    DebugPrint "Set Ver = MNew.VersionD : " & Ver.ToStr '2025.3.0.4
     DebugPrint Ver.Major & "." & Ver.Minor & "." & Ver.Build & "." & Ver.Revision & "." & Ver.MajorRevision & "." & Ver.MinorRevision '2025.3.1.0.1
     
     DebugPrint ""
@@ -131,7 +132,40 @@ Sub TestCtors()
     
 End Sub
 
-Sub TestComparing()
+Private Sub TestTodayNYesterday()
+    
+    DebugPrint "Test Today and Yesterday"
+    DebugPrint "------------------------"
+    IndentStack_Push
+    
+    Dim tod As Version: Set tod = MNew.VersionD
+    Dim yed As Version: Set yed = MNew.VersionD(tod.ToDate - 1)
+    
+    DoAllComparisons tod, yed
+    
+    IndentStack_Pop
+    
+End Sub
+
+Private Sub TestFileVersionInfo()
+    
+    DebugPrint "Test FileVersionInfo"
+    DebugPrint "--------------------"
+    IndentStack_Push
+    
+    Dim FVI1 As FileVersionInfo: Set FVI1 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "1.exe")
+    Dim FVI2 As FileVersionInfo: Set FVI2 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "2.exe")
+    
+    Dim Ver1 As Version:         Set Ver1 = MNew.VersionS(FVI1.ProductVersion)
+    Dim Ver2 As Version:         Set Ver2 = MNew.VersionS(FVI2.ProductVersion)
+    
+    DoAllComparisons Ver1, Ver2
+    
+    IndentStack_Pop
+    
+End Sub
+
+Sub TestComparisons()
     
     DebugPrint "Test Comparisons"
     DebugPrint "----------------"
@@ -182,39 +216,6 @@ Sub TestRandom()
     Set v1 = MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
     Set v2 = MNew.Version(MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8, MPtr.RndUInt8)
     DoAllComparisons v1, v2
-    
-    IndentStack_Pop
-    
-End Sub
-
-Private Sub TestFileVersionInfo()
-    
-    DebugPrint "Test FileVersionInfo"
-    DebugPrint "--------------------"
-    IndentStack_Push
-    
-    Dim FVI1 As FileVersionInfo: Set FVI1 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "1.exe")
-    Dim FVI2 As FileVersionInfo: Set FVI2 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "2.exe")
-    
-    Dim Ver1 As Version:         Set Ver1 = MNew.VersionS(FVI1.ProductVersion)
-    Dim Ver2 As Version:         Set Ver2 = MNew.VersionS(FVI2.ProductVersion)
-    
-    DoAllComparisons Ver1, Ver2
-    
-    IndentStack_Pop
-    
-End Sub
-
-Private Sub TestTodayNYesterday()
-    
-    DebugPrint "Test Today and Yesterday"
-    DebugPrint "------------------------"
-    IndentStack_Push
-
-    Dim tod As Version: Set tod = MNew.VersionD
-    Dim yed As Version: Set yed = MNew.VersionD(tod.ToDate - 1)
-    
-    DoAllComparisons tod, yed
     
     IndentStack_Pop
     
