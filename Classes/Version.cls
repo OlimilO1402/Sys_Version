@@ -48,8 +48,13 @@ Friend Sub NewS(VersionString As String)
     If u >= 3 Then m_Ver.Revision.Value = CLng(sa(3))
 End Sub
 Friend Sub NewA()
-    'there is no property Build in VB so Build gets the Revision number? nope, revision to revision
+#If VBA7 Then
+    NewS Excel.Application.Version
+#ElseIf VBA6 Then
+    NewS Excel.Application.Version
+#Else
     New_ App.Major, App.Minor, 0, App.Revision
+#End If
 End Sub
 Friend Sub NewD(Optional DateValue)
     If IsMissing(DateValue) Then DateValue = Now
