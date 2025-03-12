@@ -100,8 +100,7 @@ End Function
 ```  
   
 Pay attention on what comparing operator characters was actually needed:  
-just "<> Not Equal" and "< Less then", no need for the other operator-characters.  
-I mean you could, but you don't have to, and it could make the code not better but even less readable.  
+ "<> Not Equal" and "< Less then"  
   
 ![Version Image](Resources/Version.png "Version Image")  
   

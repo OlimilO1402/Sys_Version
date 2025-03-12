@@ -99,8 +99,7 @@ End Function
 ```  
   
 Achten Sie darauf, welche Vergleichsoperatorzeichen tatsächlich benötigt werden:  
-Nur „<> Nicht gleich“ und „< Kleiner als“, die anderen Operator-Zeichen sind beinahe überflüssig.  
-Nunja, man kann natürlich alle Operatorzeichen verwenden wenn man möchte, aber man muss nicht.   
+„<> Nicht gleich“ und „< Kleiner als“.  
   
 ![Version Image](Resources/Version.png "Version Image")  
   
