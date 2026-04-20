@@ -84,7 +84,7 @@ Private Sub BtnTestVersion_Click()
     
     IndentStack_Push
     
-    TestCtors
+    TestConstructors
     TestTodayNYesterday
     TestFileVersionInfo
     TestComparisons
@@ -94,7 +94,7 @@ Private Sub BtnTestVersion_Click()
     
 End Sub
 
-Sub TestCtors()
+Sub TestConstructors()
     
     DebugPrint "Test Constructors"
     DebugPrint "-----------------"

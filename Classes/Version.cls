@@ -58,7 +58,12 @@ Friend Sub NewA()
 End Sub
 Friend Sub NewD(Optional DateValue)
     If IsMissing(DateValue) Then DateValue = Now
-    New_ Year(DateValue), Month(DateValue), 0, Day(DateValue)
+    'New_ Year(DateValue), Month(DateValue), 0, Day(DateValue)
+    New_ Year(DateValue), Month(DateValue) * 100 + Day(DateValue), Hour(DateValue) * 100 + Minute(DateValue)
+    'Halt vielleicht kann man machen
+    'Major = Year             'max 9999
+    'Minor = Month & Day      'max 9999
+    'Revision = Hour & Minute 'max 9999
 End Sub
 
 'Copy to MNew:
@@ -88,11 +93,18 @@ Public Function Clone() As Version
 End Function
 
 Friend Function ToStr() As String
-    ToStr = m_Ver.Major & "." & m_Ver.Minor & IIf(m_Ver.Build = -1, "", "." & m_Ver.Build) & IIf(m_Ver.Revision.Value = -1, "", "." & m_Ver.Revision.Value)
+    ToStr = m_Ver.Major & "." & m_Ver.Minor & IIf(m_Ver.Build = -1, "", "." & Format(m_Ver.Build, "0000")) & IIf(m_Ver.Revision.Value = -1, "", "." & Format(m_Ver.Revision.Value, "0000"))
 End Function
 
 Friend Function ToDate() As Date
-    ToDate = DateSerial(Me.Major, Me.Minor, Me.Revision)
+    With m_Ver
+        Dim mo As Integer: mo = Int(.Minor / 100)
+        Dim da As Integer: da = .Minor - mo * 100
+        Dim ho As Integer: ho = Int(.Revision.Value / 100)
+        Dim mn As Integer: mn = .Revision.Value - ho * 100
+        ToDate = DateSerial(.Major, mo, da) + TimeSerial(ho, mn, 0)
+    End With
+    'ToDate = DateSerial(Me.Major, Me.Minor, Me.Revision)
 End Function
 
 Public Property Get Major() As Long
