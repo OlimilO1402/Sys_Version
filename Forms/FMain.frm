@@ -153,8 +153,8 @@ Private Sub TestFileVersionInfo()
     DebugPrint "--------------------"
     IndentStack_Push
     
-    Dim FVI1 As FileVersionInfo: Set FVI1 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "1.exe")
-    Dim FVI2 As FileVersionInfo: Set FVI2 = MNew.FileVersionInfo(App.Path & "\" & App.ProductName & "2.exe")
+    Dim FVI1 As FileVersionInfo: Set FVI1 = MNew.FileVersionInfo(App.Path & "\" & App.FileDescription & "1.exe")
+    Dim FVI2 As FileVersionInfo: Set FVI2 = MNew.FileVersionInfo(App.Path & "\" & App.FileDescription & "2.exe")
     
     Dim Ver1 As Version:         Set Ver1 = MNew.VersionS(FVI1.ProductVersion)
     Dim Ver2 As Version:         Set Ver2 = MNew.VersionS(FVI2.ProductVersion)
